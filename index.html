@@ -71,9 +71,11 @@ l.split(/\t|\|/).map(c=>c.trim())
 );
 }
 
-function center(text,width){
-const pad=width-text.length;
-return " ".repeat(Math.floor(pad/2))+text+" ".repeat(Math.ceil(pad/2));
+function center(text, width){
+  const total = width - text.length;
+  const left = Math.floor(total / 2);
+  const right = total - left;
+  return " ".repeat(left) + text + " ".repeat(right);
 }
 
 function build(rows){
@@ -91,7 +93,7 @@ const header=rows[0]
 .map((c,i)=>center(c,w[i]))
 .join(" | ");
 
-const sep=w.map(x=>"-".repeat(x)).join("-|-");
+const sep = w.map(x => "-".repeat(x)).join(" | ");
 
 const body=rows.slice(1).map(r=>
 r.map((c,i)=>c.padEnd(w[i]," ")).join(" | ")
