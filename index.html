@@ -79,15 +79,38 @@ function center(text, width){
 }
 
 function build(rows){
-if(!rows.length)return"";
+if(!rows.length) return "";
 
-const w=Array(rows[0].length).fill(0);
+const w = Array(rows[0].length).fill(0);
 
 rows.forEach(r=>{
 r.forEach((c,i)=>{
 w[i]=Math.max(w[i],c.length);
 });
 });
+
+function center(text,width){
+const pad = width - text.length;
+const left = Math.floor(pad/2);
+const right = pad - left;
+return " ".repeat(left)+text+" ".repeat(right);
+}
+
+// HEADER
+const header = rows[0]
+.map((c,i)=>center(c,w[i]))
+.join(" | ");
+
+// SEPARATOR
+const sep = w.map(x=>"-".repeat(x)).join("-|-");
+
+// BODY
+const body = rows.slice(1).map(r=>
+r.map((c,i)=>c.padEnd(w[i]," ")).join(" | ")
+).join("\n");
+
+return "```\n"+header+"\n"+sep+"\n"+body+"\n```";
+}
 
 const header=rows[0]
 .map((c,i)=>center(c,w[i]))
