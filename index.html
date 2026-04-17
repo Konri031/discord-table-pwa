@@ -83,9 +83,10 @@ if(!rows.length) return "";
 
 const w = Array(rows[0].length).fill(0);
 
+// 🔥 liczymy szerokość z CAŁEJ tabeli (nagłówki + dane)
 rows.forEach(r=>{
 r.forEach((c,i)=>{
-w[i]=Math.max(w[i],c.length);
+w[i] = Math.max(w[i], String(c).length);
 });
 });
 
@@ -93,10 +94,10 @@ function center(text,width){
 const pad = width - text.length;
 const left = Math.floor(pad/2);
 const right = pad - left;
-return " ".repeat(left)+text+" ".repeat(right);
+return " ".repeat(left) + text + " ".repeat(right);
 }
 
-// HEADER
+// HEADER CENTER
 const header = rows[0]
 .map((c,i)=>center(c,w[i]))
 .join(" | ");
@@ -105,24 +106,12 @@ const header = rows[0]
 const sep = w.map(x=>"-".repeat(x)).join("-|-");
 
 // BODY
-const body = rows.slice(1).map(r=>
-r.map((c,i)=>c.padEnd(w[i]," ")).join(" | ")
+const body = rows.slice(1).map(r =>
+r.map((c,i)=>String(c).padEnd(w[i]," "))
+.join(" | ")
 ).join("\n");
 
-return "```\n"+header+"\n"+sep+"\n"+body+"\n```";
-}
-
-const header=rows[0]
-.map((c,i)=>center(c,w[i]))
-.join(" | ");
-
-const sep = w.map(x => "-".repeat(x)).join(" | ");
-
-const body=rows.slice(1).map(r=>
-r.map((c,i)=>c.padEnd(w[i]," ")).join(" | ")
-).join("\n");
-
-return"```\n"+header+"\n"+sep+"\n"+body+"\n```";
+return "```\n" + header + "\n" + sep + "\n" + body + "\n```";
 }
 
 const input=document.getElementById("input");
