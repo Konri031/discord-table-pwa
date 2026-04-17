@@ -99,11 +99,10 @@ return " ".repeat(left) + text + " ".repeat(right);
 
 // HEADER CENTER
 const header = rows[0]
-.map((c,i)=>center(c,w[i]))
-.join(" | ");
-
+.map((c,i)=>" " + center(c,w[i]) + " ")
+.join("|");
 // SEPARATOR
-const sep = w.map(x=>"-".repeat(x)).join("-|-");
+const sep = w.map(x=>"-".repeat(x+2)).join("+");
 
 // BODY
 const body = rows.slice(1).map(r =>
