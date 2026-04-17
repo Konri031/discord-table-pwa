@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Discord Table PWA</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f0f0f">
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f0f0f;
+  color: #fff;
+  padding: 12px;
+}
+
+textarea {
+  width: 100%;
+  height: 180px;
+  background: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 8px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+#gen { background: #2d6cdf; color: #fff; }
+#copy { background: #1f7a3a; color: #fff; }
+
+pre {
+  margin-top: 10px;
+  background: #1a1a1a;
+  padding: 10px;
+  border-radius: 8px;
+  overflow-x: auto;
+  white-space: pre;
+}
+</style>
+</head>
+
+<body>
+
+<h3>Discord Table PWA</h3>
+
+<textarea id="input" placeholder="Wklej Excel..."></textarea>
+
+<button id="gen">Generate</button>
+<button id="copy">Copy</button>
+
+<pre id="out"></pre>
+
+<script>
+// ===== TABLE =====
+function parse(t){
+  return t.trim().split("\n").map(l=>l.split(/\t|\|/).map(x=>x.trim()));
+}
+
+function build(r){
+  if(!r.length) return "";
+
+  const w = Array(r[0].length).fill(0);
+
+  r.forEach(row=>{
+    row.forEach((c,i)=> w[i]=Math.max(w[i],c.length));
+  });
+
+  const f = row =>
+    row.map((c,i)=>c.padEnd(w[i]," ")).join(" | ");
+
+  const sep = w.map(x=>"-".repeat(x)).join("-|-");
+
+  let o="```\n";
+  r.forEach((row,i)=>{
+    if(i===1) o+=sep+"\n";
+    o+=f(row)+"\n";
+  });
+  return o+"```";
+}
+
+const input=document.getElementById("input");
+const out=document.getElementById("out");
+
+document.getElementById("gen").onclick=()=>{
+  out.textContent=build(parse(input.value));
+};
+
+document.getElementById("copy").onclick=()=>{
+  const ta=document.createElement("textarea");
+  ta.value=out.textContent;
+  document.body.appendChild(ta);
+  ta.select();
+  document.execCommand("copy");
+  ta.remove();
+};
+
+// ===== SERVICE WORKER =====
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+</body>
+</html>
